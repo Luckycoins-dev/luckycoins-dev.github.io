@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LuckyCoins — Live Luck & Jackpot Blessing</title>
+  <!-- Load Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Load Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      font-family: 'Inter', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: #050507;
+      background-image: 
+        radial-gradient(ellipse at top, rgba(245, 158, 11, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 85% 90%, rgba(161, 161, 170, 0.06) 0%, transparent 45%);
+      color: #f4f4f5;
+      min-height: 100vh;
+    }
+
+    /* Ultra-sleek dark carbon glass card */
+    .glass-panel {
+      background: linear-gradient(165deg, rgba(24, 24, 27, 0.88) 0%, rgba(12, 12, 14, 0.95) 100%);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      box-shadow: 
+        0 30px 60px -15px rgba(0, 0, 0, 0.85),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+    }
+
+    /* Floating emblem animation */
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+
+    .emblem-float {
+      animation: floatSlow 3.5s ease-in-out infinite;
+      filter: drop-shadow(0 12px 24px rgba(245, 158, 11, 0.25));
+      transition: filter 0.3s ease, transform 0.3s ease;
+    }
+
+    .emblem-float:hover {
+      filter: drop-shadow(0 16px 32px rgba(251, 191, 36, 0.45));
+    }
+
+    /* Shimmer sweep across primary button */
+    .btn-shimmer {
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-shimmer::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45), transparent);
+      transform: skewX(-20deg);
+      animation: shimmerMove 3.2s infinite;
+    }
+    @keyframes shimmerMove {
+      0% { left: -100%; }
+      45%, 100% { left: 160%; }
+    }
+
+    /* Pulse burst when activated */
+    @keyframes burstScale {
+      0% { transform: scale(0.95); }
+      50% { transform: scale(1.07); }
+      100% { transform: scale(1); }
+    }
+    .animate-burst {
+      animation: burstScale 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Smooth tab transition */
+    .tab-content {
+      animation: fadeSlideUp 0.28s ease-out;
+    }
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="flex items-center justify-center p-4 sm:p-6">
+
+  <!-- Main Container -->
+  <div class="glass-panel w-full max-w-md rounded-[2rem] p-6 sm:p-7 relative overflow-hidden">
+    
+    <!-- Subtle top accent line -->
+    <div class="absolute top-0 inset-x-12 h-[1px] bg-gradient-to-r from-transparent via-amber-400/50 to-transparent"></div>
+
+    <!-- Top Brand Header -->
+    <header class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-3">
+        <!-- Custom Crown-Coin Emblem -->
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-zinc-800 to-zinc-950 border border-amber-400/30 flex items-center justify-center shadow-lg shadow-amber-500/5">
+          <svg class="w-5 h-5 text-amber-400" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L14.8 8.5L22 9.2L16.5 13.8L18.2 21L12 17.2L5.8 21L7.5 13.8L2 9.2L9.2 8.5L12 2Z" fill="url(#goldGrad)" fill-opacity="0.25" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            <defs>
+              <linearGradient id="goldGrad" x1="2" y1="2" x2="22" y2="21" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FDE68A"/>
+                <stop offset="1" stop-color="#D97706"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-base font-extrabold tracking-tight text-white">LuckyCoins</h1>
+          <p class="text-[11px] font-medium text-zinc-400">Official Fortune Hub</p>
+        </div>
+      </div>
+
+      <!-- Aura Badge -->
+      <div class="flex items-center gap-2 bg-zinc-900/95 border border-zinc-800 px-3.5 py-1.5 rounded-full">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-400"></span>
+        </span>
+        <span class="text-[11px] font-medium text-zinc-400">Aura</span>
+        <span id="luckLevel" class="text-xs font-bold text-amber-400 tabular-nums">99%</span>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs: Lucky Coins | Lucky Bag -->
+    <nav class="grid grid-cols-2 gap-1.5 bg-zinc-950/90 p-1.5 rounded-2xl border border-zinc-800/90 mb-6">
+      <button 
+        id="tabBtnCoins" 
+        onclick="switchTab('coins')" 
+        class="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 bg-zinc-800/90 text-white shadow-sm border border-zinc-700/70 flex items-center justify-center gap-2 cursor-pointer">
+        <svg class="w-4 h-4 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="8"></circle>
+          <path d="M12 8v8M9.5 10h3.5a1.5 1.5 0 0 1 0 3h-2a1.5 1.5 0 0 0 0 3H14.5"></path>
+        </svg>
+        Lucky Coins
+      </button>
+
+      <button 
+        id="tabBtnBag" 
+        onclick="switchTab('bag')" 
+        class="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-zinc-400 hover:text-zinc-200 flex items-center justify-center gap-2 cursor-pointer">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 7h12l1 13H5L6 7Z"></path>
+          <path d="M9 7V5a3 3 0 0 1 6 0v2"></path>
+        </svg>
+        Lucky Bag
+      </button>
+    </nav>
+
+    <!-- TAB 1: LUCKY COINS -->
+    <main id="sectionCoins" class="tab-content">
+      <div class="bg-gradient-to-b from-zinc-900/80 to-zinc-950/90 border border-zinc-800/80 rounded-3xl p-6 text-center relative overflow-hidden">
+        
+        <!-- 3D Styled Luxury Golden Coin Emblem -->
+        <div class="my-3 flex justify-center relative">
+          <div class="absolute inset-0 m-auto w-36 h-36 rounded-full bg-amber-500/10 blur-2xl pointer-events-none"></div>
+          <div id="coinEmblem" onclick="triggerBlessing('coins')" class="emblem-float relative cursor-pointer select-none">
+            <svg class="w-32 h-32" viewBox="0 0 120 120" fill="none">
+              <defs>
+                <linearGradient id="coinOuter" x1="15" y1="15" x2="105" y2="105" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#FDE68A"/>
+                  <stop offset="45%" stop-color="#F59E0B"/>
+                  <stop offset="100%" stop-color="#92400E"/>
+                </linearGradient>
+                <linearGradient id="coinInner" x1="25" y1="25" x2="95" y2="95" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#27272A"/>
+                  <stop offset="100%" stop-color="#09090B"/>
+                </linearGradient>
+              </defs>
+              <!-- Outer Gold Rim -->
+              <circle cx="60" cy="60" r="48" fill="url(#coinOuter)"/>
+              <!-- Inner Dark Obsidian Face -->
+              <circle cx="60" cy="60" r="39" fill="url(#coinInner)" stroke="#FBBF24" stroke-width="1.5" stroke-opacity="0.6"/>
+              <!-- Decorative Orbit Ring -->
+              <circle cx="60" cy="60" r="32" stroke="#F59E0B" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="0.5"/>
+              <!-- Center Diamond / Coin Symbol -->
+              <path d="M60 36L74 60L60 84L46 60L60 36Z" fill="url(#coinOuter)" fill-opacity="0.2" stroke="#FBBF24" stroke-width="2.5" stroke-linejoin="round"/>
+              <circle cx="60" cy="60" r="5" fill="#FDE68A"/>
+            </svg>
+          </div>
+        </div>
+
+        <h2 class="text-lg font-bold text-white tracking-tight mt-2">Lucky Coins Blessing</h2>
+        <p class="text-xs text-zinc-400 mt-1.5 max-w-[270px] mx-auto leading-relaxed">
+          Tap the button below to channel peak fortune and attract massive coin drops.
+        </p>
+
+        <!-- Primary Action Button -->
+        <button 
+          onclick="triggerBlessing('coins')" 
+          class="btn-shimmer mt-6 w-full py-3.5 px-5 rounded-2xl font-bold text-sm text-zinc-950 bg-gradient-to-r from-amber-200 via-amber-400 to-amber-500 hover:brightness-105 active:scale-[0.98] transition-all duration-200 shadow-lg shadow-amber-500/15 cursor-pointer">
+          Lucky Coins
+        </button>
+
+        <!-- Custom Success Message Box -->
+        <div id="coinsMessageBox" class="mt-4 min-h-[64px] flex flex-col items-center justify-center rounded-2xl bg-zinc-950/90 border border-zinc-800/90 px-4 py-3 text-xs transition-all duration-300">
+          <span class="text-zinc-500">Tap "Lucky Coins" to receive your fortune blessing.</span>
+        </div>
+      </div>
+    </main>
+
+    <!-- TAB 2: LUCKY BAG -->
+    <section id="sectionBag" class="tab-content hidden">
+      <div class="bg-gradient-to-b from-zinc-900/80 to-zinc-950/90 border border-zinc-800/80 rounded-3xl p-6 text-center relative overflow-hidden">
+        
+        <!-- 3D Styled Luxury Fortune Pouch Emblem -->
+        <div class="my-3 flex justify-center relative">
+          <div class="absolute inset-0 m-auto w-36 h-36 rounded-full bg-amber-500/10 blur-2xl pointer-events-none"></div>
+          <div id="bagEmblem" onclick="triggerBlessing('bag')" class="emblem-float relative cursor-pointer select-none">
+            <svg class="w-32 h-32" viewBox="0 0 120 120" fill="none">
+              <defs>
+                <linearGradient id="bagGrad" x1="30" y1="25" x2="90" y2="100" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#3F3F46"/>
+                  <stop offset="50%" stop-color="#18181B"/>
+                  <stop offset="100%" stop-color="#09090B"/>
+                </linearGradient>
+              </defs>
+              <!-- Pouch Top Ruffle -->
+              <path d="M44 26C44 22 50 20 60 20C70 20 76 22 76 26L72 38H48L44 26Z" fill="#27272A" stroke="#FBBF24" stroke-width="2"/>
+              <!-- Pouch Body -->
+              <path d="M46 38C30 48 24 68 28 84C31 95 44 100 60 100C76 100 89 95 92 84C96 68 90 48 74 38H46Z" fill="url(#bagGrad)" stroke="#FBBF24" stroke-width="2.5"/>
+              <!-- Golden Drawstring Ribbon -->
+              <path d="M45 39H75" stroke="#FDE68A" stroke-width="3" stroke-linecap="round"/>
+              <path d="M55 39L48 50M65 39L72 50" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"/>
+              <!-- Center Lucky Seal -->
+              <circle cx="60" cy="68" r="14" fill="#18181B" stroke="#FBBF24" stroke-width="2"/>
+              <path d="M60 60L62.5 65.5L68 68L62.5 70.5L60 76L57.5 70.5L52 68L57.5 65.5L60 60Z" fill="#FDE68A"/>
+            </svg>
+          </div>
+        </div>
+
+        <h2 class="text-lg font-bold text-white tracking-tight mt-2">Lucky Bag Fortune</h2>
+        <p class="text-xs text-zinc-400 mt-1.5 max-w-[270px] mx-auto leading-relaxed">
+          Open your spiritual fortune pouch to unlock abundance and endless good luck.
+        </p>
+
+        <!-- Primary Action Button -->
+        <button 
+          onclick="triggerBlessing('bag')" 
+          class="btn-shimmer mt-6 w-full py-3.5 px-5 rounded-2xl font-bold text-sm text-zinc-950 bg-gradient-to-r from-amber-200 via-amber-400 to-amber-500 hover:brightness-105 active:scale-[0.98] transition-all duration-200 shadow-lg shadow-amber-500/15 cursor-pointer">
+          Lucky Bag
+        </button>
+
+        <!-- Custom Success Message Box -->
+        <div id="bagMessageBox" class="mt-4 min-h-[64px] flex flex-col items-center justify-center rounded-2xl bg-zinc-950/90 border border-zinc-800/90 px-4 py-3 text-xs transition-all duration-300">
+          <span class="text-zinc-500">Tap "Lucky Bag" to unlock your good fortune blessing.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Minimalist Footer -->
+    <footer class="mt-5 text-center">
+      <p class="text-[11px] text-zinc-500 font-medium">
+        Blessings sent: <span id="blessingCounter" class="text-zinc-300 font-bold tabular-nums">0</span>
+      </p>
+    </footer>
+
+  </div>
+
+  <script>
+    let blessingCount = 0;
+
+    // Switch between Lucky Coins and Lucky Bag tabs
+    function switchTab(tabName) {
+      const btnCoins = document.getElementById('tabBtnCoins');
+      const btnBag = document.getElementById('tabBtnBag');
+      const secCoins = document.getElementById('sectionCoins');
+      const secBag = document.getElementById('sectionBag');
+
+      const activeClasses = ['bg-zinc-800/90', 'text-white', 'shadow-sm', 'border', 'border-zinc-700/70'];
+      const inactiveClasses = ['text-zinc-400', 'hover:text-zinc-200'];
+
+      if (tabName === 'coins') {
+        secCoins.classList.remove('hidden');
+        secBag.classList.add('hidden');
+
+        btnCoins.classList.add(...activeClasses);
+        btnCoins.classList.remove(...inactiveClasses);
+
+        btnBag.classList.remove(...activeClasses);
+        btnBag.classList.add(...inactiveClasses);
+      } else {
+        secBag.classList.remove('hidden');
+        secCoins.classList.add('hidden');
+
+        btnBag.classList.add(...activeClasses);
+        btnBag.classList.remove(...inactiveClasses);
+
+        btnCoins.classList.remove(...activeClasses);
+        btnCoins.classList.add(...inactiveClasses);
+      }
+    }
+
+    // Trigger the requested blessing message with smooth visual feedback
+    function triggerBlessing(type) {
+      blessingCount += 1;
+      document.getElementById('blessingCounter').textContent = blessingCount;
+
+      const emblemId = type === 'coins' ? 'coinEmblem' : 'bagEmblem';
+      const boxId = type === 'coins' ? 'coinsMessageBox' : 'bagMessageBox';
+
+      const emblem = document.getElementById(emblemId);
+      const msgBox = document.getElementById(boxId);
+
+      // Replay burst animation on emblem
+      emblem.classList.remove('animate-burst');
+      void emblem.offsetWidth;
+      emblem.classList.add('animate-burst');
+
+      // Update Aura percentage slightly for dynamic feel
+      const randomAura = Math.floor(Math.random() * 2) + 99; // 99% or 100%
+      document.getElementById('luckLevel').textContent = `${randomAura}%`;
+
+      // Display exact requested message with sleek emerald/gold styling
+      msgBox.className = 'mt-4 min-h-[64px] flex flex-col items-center justify-center rounded-2xl bg-amber-500/10 border border-amber-400/40 px-4 py-3.5 text-xs transition-all duration-300 shadow-inner';
+      msgBox.innerHTML = `
+        <div class="flex items-center gap-1.5 text-amber-400 font-bold mb-1">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Blessed & Confirmed</span>
+        </div>
+        <p class="text-zinc-100 font-medium leading-relaxed">
+          Your request was successful. I wish you lots of luck and good fortune.
+        </p>
+      `;
+    }
+  </script>
+</body>
+</html>
